@@ -34,7 +34,7 @@
         <div class="photos">
           <div class="photo-list" v-for="item in items">
             <div class="grid">
-              <photo-preview :images="images"></photo-preview>
+              <photo-preview :images="JSON.parse(item.images)"></photo-preview>
             </div>
             <div class="main">
               <h3>{{item.title}}</h3>
@@ -97,8 +97,7 @@
             pullUpLoad: false
           }
           
-        },
-        images: ['src/assets/logo.png', 'https://www.baidu.com/img/baidu_jgylogo3.gif', 'src/assets/logo.png']
+        }
       }
     },
     methods: {
@@ -132,7 +131,7 @@
         .then((res) => {
           if (res.data.data.length > 0) {
             // 如果有数据
-            console.log(res.data.data);
+            // console.log(res.data.data);
             //把所有搜索到的数据呈现,切换到别的页面显示,可以实现上拉加载
             
           } else {

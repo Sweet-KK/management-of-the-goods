@@ -43,8 +43,12 @@ router.get("/get", function (req, res, next) {
 /**
  * 添加数据
  */
-router.get("/add", function (req, res, next) {
-  // res.render("add");
+// 处理图片上传
+router.post("/assets", function (req, res, next) {
+  // res.end(req);
+  // res.json(req.body);
+  // res.json(req.files);
+  // res.end()
 });
 router.post("/add", function (req, res, next) {
   var title = req.body.title;
@@ -52,7 +56,7 @@ router.post("/add", function (req, res, next) {
   var images = req.body.images;
   var origPrice = req.body.origPrice;
   var currPrice = req.body.currPrice;
-  db.query("insert into shop_list(title,content,images,orig_price,curr_price) values('" + title + "','" + content + "','" + images + "','" + origPrice + "','" + currPrice + "')", function (err, rows) {
+  db.query(`insert into shop_list(title,content,images,orig_price,curr_price) values('${title}','${content}','${images}','${origPrice}','${currPrice}')`, function (err, rows) {
     if (err) {
       res.json({status: 0, msg: '新增失败', error: err})
     } else {
@@ -67,7 +71,7 @@ router.post("/add", function (req, res, next) {
  */
 router.get("/del/:id", function (req, res) {
   var id = req.params.id;
-  db.query("delete from shop_list where id = " + id, function (err, rows) {
+  db.query(`delete from shop_list where id = ${id}`, function (err, rows) {
     if (err) {
       res.json({status: 0, msg: '删除失败', error: err})
     } else {
@@ -82,7 +86,7 @@ router.get("/del/:id", function (req, res) {
  */
 router.get("/toUpdate/:id", function (req, res, next) {
   var id = req.params.id;
-  var sql = "select * from shop_list where id = " + id;
+  var sql = `select * from shop_list where id ${id}`;
   console.log(sql);
   db.query(sql, function (err, rows) {
     if (err) {
@@ -103,13 +107,13 @@ router.post("/update", function (req, res, next) {
   var currPrice = req.body.currPrice;
 
   var sql = "update shop_list set ";
-  if(title!=undefined){sql += "title = '" + title + "',"}
-  if(content!=undefined){sql += "content = '" + content + "',"}
-  if(images!=undefined){sql += "images = '" + images + "',"}
-  if(origPrice!=undefined){sql += "orig_price = '" + origPrice + "',"}
-  if(currPrice!=undefined){sql += "curr_price = '" + currPrice + "',"}
+  if(title!=undefined){sql += `title = '${title}',`}
+  if(content!=undefined){sql += `content = '${content}',`}
+  if(images!=undefined){sql += `images = '${images}',`}
+  if(origPrice!=undefined){sql += `orig_price = '${origPrice}',`}
+  if(currPrice!=undefined){sql += `curr_price = '${currPrice}',`}
   sql = sql.slice(0,-1);
-  sql += " where id = " + id;
+  sql += ` where id = ${id}`;
   console.log(sql);
   db.query(sql, function (err, rows) {
     if (err) {
@@ -129,8 +133,8 @@ router.post("/search", function (req, res, next) {
   var keyword = req.body.keyword;
   var sql = "select * from shop_list";
   if (keyword) {
-    sql += " where title like '%" + keyword + "%'";
-    sql += " or content like '%" + keyword + "%'";
+    sql += ` where title like '%${keyword}%'`;
+    sql += ` or content like '%${keyword}%'`;
   }
 
   db.query(sql, function (err, rows) {

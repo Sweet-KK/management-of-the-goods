@@ -29,7 +29,8 @@ import {
   Slide,
   IndexList,
   Swipe,
-  Upload
+  Upload,
+  Form
 } from 'cube-ui'
 import Viewer from 'v-viewer'
 Vue.use(Viewer)
@@ -66,6 +67,7 @@ Vue.use(Slide)
 Vue.use(IndexList)
 Vue.use(Swipe)
 Vue.use(Upload)
+Vue.use(Form)
 
 Vue.config.productionTip = false
 

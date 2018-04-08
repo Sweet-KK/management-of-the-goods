@@ -13,7 +13,7 @@ export default new Router({
       component:　Photos
     },
     {
-      path: '/add',
+      path: '/upload',
       name: '新增数据页',
       component: Upload
     }
