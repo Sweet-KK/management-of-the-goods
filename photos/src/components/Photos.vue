@@ -34,7 +34,7 @@
         <div class="photos">
           <div class="photo-list" v-for="item in items">
             <div class="grid">
-              <photo-preview :images="JSON.parse(item.images)"></photo-preview>
+              <photo-preview :images="images"></photo-preview>
             </div>
             <div class="main">
               <h3>{{item.title}}</h3>
@@ -74,6 +74,7 @@
             image: '//webapp.didistatic.com/static/webapp/shield/cube-ui-examples-slide03.png'
           }
         ],
+        images: ['/api/temp/1523236652000.jpg'],
         maxlength: 20,
         items: [],
         pageNum: 1,
