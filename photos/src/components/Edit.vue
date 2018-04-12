@@ -1,8 +1,8 @@
 <template>
-  <div id="photos">
+  <div id="edit">
     <div class="fix-title">
-      <h2>相册</h2>
-      <router-link to="/login" class="icon iconfont icon-guanliyuan"></router-link>
+      <a href="" @click.prevent="toBack" class="be-back icon iconfont icon-guanbi"></a>
+      <h2>商品管理</h2>
     </div>
     <div class="content">
       <cube-scroll
@@ -10,15 +10,6 @@
           :options="options.open"
           @pulling-down="onPullingDown"
           @pulling-up="onPullingUp">
-        
-        <!--banner-->
-        <cube-slide ref="slide" :data="banners">
-          <cube-slide-item v-for="(item, index) in banners" :key="index">
-            <a :href="item.url">
-              <img :src="item.image">
-            </a>
-          </cube-slide-item>
-        </cube-slide>
         
         <!--Search-->
         <div class="searchBar">
@@ -32,9 +23,9 @@
         </div>
         
         <div class="photos">
-          <div class="photo-list" v-if="items.length>0" v-for="item in items">
+          <div class="photo-list" v-if="items.length>0" v-for="(item, index) in items">
+            <a class="delete icon iconfont icon-close" href="" @click.prevent="toDelete(item.id,index)"></a>
             <div class="grid">
-              <!--{{item.images.split(',')}}-->
               <photo-preview :images = "item.images | imgArr"></photo-preview>
             </div>
             <div class="main">
@@ -45,6 +36,7 @@
                 <span class="curr">售价:<b>{{item.curr_price || 'null'}}</b></span>
               </p>
               <p class="time">发表于 <span>{{item.creat_time | dateFormat}}</span></p>
+              <router-link :to="'/edit-this/'+item.id" class="edit-this icon iconfont icon-bianji">编辑</router-link>
             </div>
           </div>
           <div class="photo-list" :class="[items.length==0 ? 'nodata' : '']" v-if="items.length==0">
@@ -61,7 +53,7 @@
   import PhotoPreview from '../components/PhotoPreview'
   
   export default {
-    name: 'photos',
+    name: 'edit',
     data() {
       return {
         keyword: '',
@@ -83,7 +75,6 @@
         items: [],
         pageNum: 1,
         pageSize: 5,
-        // 上拉刷新下拉加载选项
         options: {
           open: {
             pullDownRefresh: {
@@ -121,7 +112,7 @@
         this.pageNum++;
         setTimeout(()=>{
           this.addPageData(this.pageNum,this.pageSize)
-        }, 200)
+        }, 300)
         
       },
       // 搜索关键词
@@ -174,6 +165,52 @@
           console.log(err);
         })
         
+      },
+      // 路由后退
+      toBack() {
+        this.$router.back(-1)
+      },
+      // 删除指定数据
+      toDelete(id,index){
+        this.$createDialog({
+          type: 'confirm',
+          icon: '',
+          title: '',
+          content: '确认删除此条数据?',
+          confirmBtn: {
+            text: '确定',
+            active: true,
+            disabled: false,
+            href: 'javascript:;'
+          },
+          cancelBtn: {
+            text: '取消',
+            active: false,
+            disabled: false,
+            href: 'javascript:;'
+          },
+          onConfirm: () => {
+            // 确认即删除
+            this.axios.get('/api/del/'+id)
+            .then((res)=>{
+              if(res.data.status==1){
+                this.items.splice(index,1)
+              }else {
+                this.$createToast({
+                  type: 'warn',
+                  time: 1000,
+                  txt: '删除失败'+res.data.msg
+                }).show()
+              }
+            })
+            .catch((err)=>{
+              console.log(err);
+            })
+          },
+          onCancel: () => {
+            // 取消不作任何处理
+          }
+        }).show()
       }
     },
     created: function () {

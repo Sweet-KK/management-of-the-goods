@@ -4,9 +4,10 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var fs = require('fs');
 
 var index = require('./routes/index');
-var users = require('./routes/data');
+var api = require('./routes/data');
 
 var app = express();
 
@@ -23,7 +24,21 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/api', users);
+/**
+ * 显示对应路径下的图片
+ */
+app.get('/api/assets/:imageName', function (req, res, next) {
+  var imageName = req.params.imageName;
+  var suffix = imageName.split('.')[imageName.split('.').length - 1];
+  // console.log("文件名：", imageName);
+  // console.log("后缀名：", suffix);
+  // res.writeHead(200, {'Content-Type': 'image/' + suffix});
+  res.send(fs.readFileSync(path.join(__dirname, 'public', 'assets', imageName)));
+});
+app.use('/api', api);
+
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

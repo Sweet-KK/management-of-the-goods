@@ -5,15 +5,30 @@ var fs = require('fs');
 
 var db = require('../config/db');
 
+
 /**
- * 根据页面查询数据
+ * 根据id查询数据
+ */
+router.get("/getforid", function (req, res, next) {
+  var id = req.query.id;
+  db.query(`SELECT * from shop_list WHERE id=${id};`, function (err,rows) {
+    if (err) {
+      console.log(`查询错误${err}`);
+    } else {
+      res.json({status: 1, msg: '', data: rows})
+    }
+  })
+});
+/**
+ * 根据关键字分页查询数据,不传为查询所有
  */
 router.get("/get", function (req, res, next) {
+  var keyword = req.query.keyword || '';
   // pageSize为每页显示条数
-  var pageSize = 3;
-  var pageNum = req.query.page * 1 || 1;
+  var pageSize = req.query.pageSize || 5;
+  var pageNum = req.query.pageNum || 1;
   var start = (pageNum - 1) * pageSize;
-  var sql = 'SELECT COUNT(*) FROM shop_list';
+  var sql = `SELECT COUNT(*) FROM shop_list where title like '%${keyword}%' or content like '%${keyword}%';`;
   db.query(sql, function (err, rows) {
     if (err) {
       res.json({status: 0, msg: '获取数据出错', error: err})
@@ -28,7 +43,7 @@ router.get("/get", function (req, res, next) {
       }
       
       // 两条语句同时查询报错,就分两次查询了
-      sql = `SELECT * FROM shop_list order by id desc limit ${start},${pageSize};`;
+      sql = `SELECT * FROM shop_list where title like '%${keyword}%' or content like '%${keyword}%' order by creat_time desc limit ${start},${pageSize};`;
       db.query(sql, function (err, rows) {
         if (err) {
           res.json({status: 0, msg: '获取数据出错', error: err})
@@ -60,11 +75,11 @@ router.post("/upload/img", function (req, res, next) {
     } else {
       console.log('图片上传成功');
       // console.log(files);   //上传文件
-  
+      
       var types = files.file.name.split('.'); //将文件名以.分隔，取得数组最后一项作为文件后缀名。
       var date = new Date();
       var ms = Date.parse(date); //计算当前时间与1970年1月1日午夜相差的毫秒数 赋值给ms以确保文件名无重复。
-      var newPath = `${__dirname}\\..\\temp\\`;
+      var newPath = `${__dirname}\\..\\public\\assets\\`;
       var newName = `${ms}${Math.floor(Math.random() * 100)}.${String(types[types.length - 1])}`;
       
       // 文件重命名
@@ -93,56 +108,67 @@ router.post("/upload/text", function (req, res, next) {
   
 });
 
+
 /**
  * 删除数据
  */
 router.get("/del/:id", function (req, res) {
   var id = req.params.id;
-  db.query(`delete from shop_list where id = ${id}`, function (err, rows) {
+  db.query(`SELECT * from shop_list WHERE id=${id};`, function (err,rows) {
     if (err) {
-      res.json({status: 0, msg: '删除失败', error: err})
+      console.log(`查询删除错误${err}`);
     } else {
-      res.json({status: 1, msg: '', data: rows})
-      // res.redirect("/users");
+      // 先遍历图片数组删除对应图片
+      let imageArr = rows[0].images.split(',')
+      imageArr.forEach((value, index, array)=>{
+        let fileName = value.split('/')[value.split('/').length-1];
+  
+        fs.unlink(`${__dirname}\\..\\public\\assets\\${fileName}`, function(err) {
+          if (err) {
+            console.error(err);
+          }
+          console.log(`${fileName}删除成功!`);
+        });
+      })
+  
+      // 再删除存储数据
+      db.query(`delete from shop_list where id = ${id}`, function (err, rows) {
+        if (err) {
+          res.json({status: 0, msg: '删除失败', error: err})
+        } else {
+          res.json({status: 1, msg: '', data: rows})
+        }
+      });
     }
-  });
+  })
+  
+  
+  
+  
 });
 
 /**
- * 修改数据
+ * 修改数据(目前只能修改文本信息,不支持图片修改)
  */
-router.get("/toUpdate/:id", function (req, res, next) {
-  var id = req.params.id;
-  var sql = `select * from shop_list where id ${id}`;
-  console.log(sql);
-  db.query(sql, function (err, rows) {
-    if (err) {
-      res.send("修改页面跳转失败");
-    } else {
-      res.send("跳转到修改页面");
-      // res.render("update", {datas: rows});
-    }
-  });
-});
-
 router.post("/update", function (req, res, next) {
   var id = req.body.id;
   var title = req.body.title;
   var content = req.body.content;
-  var images = req.body.images;
+  // var images = req.body.images;
   var origPrice = req.body.origPrice;
   var currPrice = req.body.currPrice;
   
   var sql = "update shop_list set ";
+  
   if (title != undefined) {
     sql += `title = '${title}',`
   }
   if (content != undefined) {
     sql += `content = '${content}',`
   }
-  if (images != undefined) {
-    sql += `images = '${images}',`
-  }
+  // if (images != undefined) {
+  //   sql += `images = '${images}',`
+  // }
   if (origPrice != undefined) {
     sql += `orig_price = '${origPrice}',`
   }
@@ -151,36 +177,16 @@ router.post("/update", function (req, res, next) {
   }
   sql = sql.slice(0, -1);
   sql += ` where id = ${id}`;
-  console.log(sql);
+  // 向数据库发起修改
   db.query(sql, function (err, rows) {
     if (err) {
       res.json({status: 0, msg: '修改失败', error: err})
     } else {
       res.json({status: 1, msg: '', data: rows})
-      // res.redirect("/users");
     }
   });
 });
 
 
-/**
- * 搜索关键词
- */
-router.post("/search", function (req, res, next) {
-  var keyword = req.body.keyword;
-  var sql = "select * from shop_list";
-  if (keyword) {
-    sql += ` where title like '%${keyword}%'`;
-    sql += ` or content like '%${keyword}%'`;
-  }
-  
-  db.query(sql, function (err, rows) {
-    if (err) {
-      res.json({status: 0, msg: '查询失败', error: err})
-    } else {
-      res.json({status: 1, msg: '', data: rows, keyword: keyword})
-    }
-  });
-})
 
 module.exports = router;
