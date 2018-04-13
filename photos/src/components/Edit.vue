@@ -191,7 +191,9 @@
           },
           onConfirm: () => {
             // 确认即删除
-            this.axios.get('/api/del/'+id)
+            this.axios.post('/api/del',{
+              id: id
+            })
             .then((res)=>{
               if(res.data.status==1){
                 this.items.splice(index,1)

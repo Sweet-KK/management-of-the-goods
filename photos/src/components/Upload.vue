@@ -11,7 +11,8 @@
         <cube-upload
           v-if="isRender"
           action="/api/upload/img"
-          @file-success="updateArr"
+          @file-success="addToArr"
+          @file-removed="filesRemoved"
           :simultaneous-uploads="9"/>
         <input type="hidden" name="images" :value="images">
       </div>
@@ -50,11 +51,36 @@
       }
     },
     methods: {
-      updateArr(file) {
+      addToArr(file) {
         if (file.status == 'success') {
           var filename = file.response.filename;
           // console.log(filename);
           this.images.push('/api/assets/'+filename);
+        }
+      },
+      delFromArr(fileName){
+        var index = this.images.indexOf('/api/assets/'+fileName);
+        if (index > -1) {
+          this.images.splice(index, 1);
+        }
+      },
+      filesRemoved(file){
+        console.log(file);
+        // 图片上传成功删除时才需要删除对应文件
+        if(file.response.status==1){
+          var fileName = file.response.filename;
+          console.log(fileName);
+          this.axios.post('/api/delfile',{
+            fileName:fileName
+          })
+          .then((res)=>{
+            if(res.data.status==1){
+              this.delFromArr(fileName)
+            }
+          })
+          .catch((err)=>{
+            console.log(err);
+          })
         }
       },
       uploadData(){

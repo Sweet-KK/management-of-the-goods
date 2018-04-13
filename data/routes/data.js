@@ -11,7 +11,7 @@ var db = require('../config/db');
  */
 router.get("/getforid", function (req, res, next) {
   var id = req.query.id;
-  db.query(`SELECT * from shop_list WHERE id=${id};`, function (err,rows) {
+  db.query(`SELECT * from shop_list WHERE id=${id};`, function (err, rows) {
     if (err) {
       console.log(`查询错误${err}`);
     } else {
@@ -108,29 +108,46 @@ router.post("/upload/text", function (req, res, next) {
   
 });
 
+/**
+ * 删除文件
+ */
+function deleteFile(fileName, fn) {
+  fs.unlink(`${__dirname}\\..\\public\\assets\\${fileName}`, function (err) {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(`${fileName}删除成功!`);
+      if(fn) {fn()}
+    }
+  });
+}
 
 /**
- * 删除数据
+ * 删除储存文件
  */
-router.get("/del/:id", function (req, res) {
-  var id = req.params.id;
-  db.query(`SELECT * from shop_list WHERE id=${id};`, function (err,rows) {
+router.post("/delfile", function (req, res) {
+  var fileName = req.body.fileName;
+  deleteFile(fileName,function () {
+    res.json({status: 1, msg: `${fileName}删除成功!`})
+  })
+});
+/**
+ * 删除储存文件和数据
+ */
+router.post("/del", function (req, res) {
+  var id = req.body.id;
+  db.query(`SELECT * from shop_list WHERE id=${id};`, function (err, rows) {
     if (err) {
       console.log(`查询删除错误${err}`);
     } else {
       // 先遍历图片数组删除对应图片
       let imageArr = rows[0].images.split(',')
-      imageArr.forEach((value, index, array)=>{
-        let fileName = value.split('/')[value.split('/').length-1];
+      imageArr.forEach((value, index, array) => {
+        let fileName = value.split('/')[value.split('/').length - 1];
   
-        fs.unlink(`${__dirname}\\..\\public\\assets\\${fileName}`, function(err) {
-          if (err) {
-            console.error(err);
-          }
-          console.log(`${fileName}删除成功!`);
-        });
+        deleteFile(fileName)
       })
-  
+      
       // 再删除存储数据
       db.query(`delete from shop_list where id = ${id}`, function (err, rows) {
         if (err) {
@@ -141,10 +158,6 @@ router.get("/del/:id", function (req, res) {
       });
     }
   })
-  
-  
-  
-  
 });
 
 /**
@@ -186,7 +199,6 @@ router.post("/update", function (req, res, next) {
     }
   });
 });
-
 
 
 module.exports = router;
