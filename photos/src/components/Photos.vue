@@ -2,7 +2,7 @@
   <div id="photos">
     <div class="fix-title">
       <h2>相册</h2>
-      <router-link to="/login" class="icon iconfont icon-guanliyuan"></router-link>
+      <a @click.prevent="checkToken" class="icon iconfont icon-guanliyuan"></a>
     </div>
     <div class="content">
       <cube-scroll
@@ -59,6 +59,7 @@
 
 <script>
   import PhotoPreview from '../components/PhotoPreview'
+  import cookies from 'js-cookies'
   
   export default {
     name: 'photos',
@@ -174,6 +175,21 @@
           console.log(err);
         })
         
+      },
+      // 判断token
+      checkToken(){
+        // 发送校验token请求
+        this.axios.post('/api/checktoken')
+        .then((res)=>{
+          if(res.data.status==1){
+            this.$router.push('/admin')
+          }else {
+            this.$router.push('/login')
+          }
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
       }
     },
     created: function () {

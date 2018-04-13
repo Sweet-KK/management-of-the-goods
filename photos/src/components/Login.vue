@@ -20,6 +20,9 @@
 </template>
 
 <script>
+  import md5 from 'md5';
+  import cookies from 'js-cookies'
+  
   export default {
     name: "login",
     data() {
@@ -41,26 +44,38 @@
           toast.show()
           return;
         }
-        // 账号密码验证,后续改成发送数据到后台验证
-        if(this.account=='admin' && this.pwd=='306484328'){
-          const toast = this.$createToast({
-            type: 'warn',
-            time: 1000,
-            txt: '登录成功,页面即将跳转!'
-          })
-          toast.show()
-          setTimeout(()=>{
-            this.$router.push('/api')
-          },1500)
-        }else {
-          const toast = this.$createToast({
-            type: 'warn',
-            time: 1000,
-            txt: '错误的账号或密码,请重新输入!!!'
-          })
-          toast.show()
-          return;
-        }
+        // 获取token
+        const salt = '54guanliyuan';
+        this.axios.post('/api/gettoken',{
+          account: md5(this.account+salt),
+          pwd: md5(this.pwd+salt)
+        })
+        .then((res)=>{
+          if(res.data.status==1){
+            // 把token存储到session/cookies
+            var token = res.data.msg;
+            cookies.setItem('token', token);
+            
+            // toast2秒后页面跳转
+            this.$createToast({
+              type: 'warn',
+              time: 1000,
+              txt: '登录成功,页面将在2s后跳转!'
+            }).show()
+            setTimeout(()=>{
+              this.$router.push('/admin')
+            },2000)
+          }else {
+            this.$createToast({
+              type: 'warn',
+              time: 1000,
+              txt: '登录失败,账号或密码不正确!'
+            }).show()
+          }
+        })
+        .catch((err)=>{
+        
+        })
       },
       toBack(){
         this.$router.back(-1)

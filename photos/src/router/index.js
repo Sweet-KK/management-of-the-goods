@@ -22,7 +22,7 @@ export default new Router({
       component: Login
     },
     {
-      path: '/api',
+      path: '/admin',
       name: '相册管理页面',
       component: Admin
     },

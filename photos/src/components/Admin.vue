@@ -13,11 +13,25 @@
 </template>
 
 <script>
+  import cookie from 'js-cookies'
+ 
   export default {
     name: "admin",
     methods: {
       toBack() {
-        this.$router.back(-1)
+        // 发送校验token请求
+        this.axios.post('/api/checktoken')
+        .then((res)=>{
+          if(res.data.status==1){
+            this.$router.push('/')
+          }else {
+            this.$router.back(-1)
+          }
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
+        
       }
     }
   }

@@ -2,9 +2,45 @@ var express = require('express');
 var router = express.Router();
 var formidable = require('formidable');
 var fs = require('fs');
+var jwt = require("jsonwebtoken");
 
 var db = require('../config/db');
 
+const userMd5 = '8BD6BBD87C11BF8574B976871E991119';
+const pwdMd5 = 'D0769C827224F907C232414758FF8944';
+const content = {uid: userMd5};
+const secretOrPrivateKey = 'I am an admin!';
+
+
+/**
+ * 校验管理员账户密码,返回token(懒得再新建个表存储账号密码了,直接验证)
+ */
+router.post('/gettoken', function (req, res, next) {
+  var acoount = req.body.account.toUpperCase();
+  var pwd = req.body.pwd.toUpperCase();
+  if (acoount == userMd5 && pwd == pwdMd5) {
+    var token = jwt.sign(content, secretOrPrivateKey, {
+      expiresIn: 60*15  //15分钟
+    });
+    res.json({status: 1, msg: token})
+  } else {
+    res.json({status: 0, msg: '账号或密码不正确'})
+  }
+})
+/**
+ * 校验token
+ */
+router.post('/checktoken', function (req, res, next) {
+  var token = req.cookies.token || req.body.token || req.headers["x-access-token"]; // 从body或query或者header中获取token
+  jwt.verify(token, secretOrPrivateKey, function (err, decode) {
+    if (err) {  //  时间失效的时候/ 伪造的token
+      res.json({status: 0, msg: err})
+    } else {
+      // req.decode = decode;
+      res.json({status: 1, msg: decode})
+    }
+  })
+})
 
 /**
  * 根据id查询数据
@@ -117,7 +153,9 @@ function deleteFile(fileName, fn) {
       console.error(err);
     } else {
       console.log(`${fileName}删除成功!`);
-      if(fn) {fn()}
+      if (fn) {
+        fn()
+      }
     }
   });
 }
@@ -127,7 +165,7 @@ function deleteFile(fileName, fn) {
  */
 router.post("/delfile", function (req, res) {
   var fileName = req.body.fileName;
-  deleteFile(fileName,function () {
+  deleteFile(fileName, function () {
     res.json({status: 1, msg: `${fileName}删除成功!`})
   })
 });
@@ -144,7 +182,7 @@ router.post("/del", function (req, res) {
       let imageArr = rows[0].images.split(',')
       imageArr.forEach((value, index, array) => {
         let fileName = value.split('/')[value.split('/').length - 1];
-  
+        
         deleteFile(fileName)
       })
       
