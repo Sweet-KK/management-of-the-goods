@@ -1,7 +1,11 @@
 # management-of-the-goods
 vue+node +express+mysql,商品展示、搜索、上传、编辑修改
 
-第一次尝试全栈开发,不知道如何把一个express项目和vue项目合并起来,所以就采取一种较为笨拙的方法,分别创建两个项目,一个负责后端,一个负责前端.开发完毕以后把vue项目打包,只需要把dist里面的index.html文件拷贝到express项目中的views文件夹下,把dist里面的static文件夹拷贝到express项目中的public文件夹下,最后只需要跑express项目就行了
+第一次尝试全栈开发,不知道如何把一个express项目和vue项目合并起来,所以就采取一种较为笨拙的方法,分别创建两个项目,一个负责后端,一个负责前端.开发完毕以后把vue项目打包,只需要把dist里面的index.html文件拷贝到express项目中的views文件夹下并改为index.ejs,把dist里面的static文件夹拷贝到express项目中的public文件夹下,最后只需要跑express项目就行了
+
+express项目:data目录    
+vue-cli项目:photos目录
+
 
 暂未写好此文档,有很多错误,后续再做修改
 
@@ -18,7 +22,8 @@ npm install
 
 # serve with hot reload at localhost:3000
 npm start
-
+    
+浏览器打开localhost:3000即可
 ```
 
 
@@ -34,15 +39,18 @@ cd data/
 npm install
 
 # serve with hot reload at localhost:3000
-npm start
+npm start   
+    
 
 然后把vue项目跑起来
+
 # 进入photos项目目录
 cd photos/
 
 # install dependencies
 npm install
 
-# serve with hot reload at localhost:3000
+# serve with hot reload at localhost:8080
 npm run dev
+
 ```
