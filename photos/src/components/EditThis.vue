@@ -5,7 +5,11 @@
       <h2>商品编辑</h2>
     </div>
   
-    <photo-preview v-if="images.length>0" :images = "images | imgArr"></photo-preview>
+    <photo-preview
+        v-if="images.length>0"
+        :images = "images | imgArr"
+        :showDel="true"
+    ></photo-preview>
     
     <form method="post" enctype="multipart/form-data" action="" @submit.prevent="updateData">
       <div class="item">
@@ -41,7 +45,7 @@
         content: '',
         origPrice: null,
         currPrice: null,
-        images: '',
+        images: [],
       }
     },
     methods: {

@@ -24,6 +24,7 @@
   "dependencies": {
     "amfe-flexible": "^2.2.1",
     "axios": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
     "cube-ui": "^1.7.2",
     "js-cookies": "^1.0.4",
     "md5": "^2.2.1",

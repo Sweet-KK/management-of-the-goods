@@ -109,7 +109,6 @@ router.post("/upload/img", function (req, res, next) {
     if (err) {
       res.json({status: 0, msg: '图片上传失败', error: err})
     } else {
-      console.log('图片上传成功');
       // console.log(files);   //上传文件
       
       var types = files.file.name.split('.'); //将文件名以.分隔，取得数组最后一项作为文件后缀名。
@@ -117,7 +116,9 @@ router.post("/upload/img", function (req, res, next) {
       var ms = Date.parse(date); //计算当前时间与1970年1月1日午夜相差的毫秒数 赋值给ms以确保文件名无重复。
       var newPath = `${__dirname}\\..\\public\\assets\\`;
       var newName = `${ms}${Math.floor(Math.random() * 100)}.${String(types[types.length - 1])}`;
-      
+      console.log(newName+'图片上传成功');
+  
+  
       // 文件重命名
       fs.renameSync(files.file.path, newPath + newName);
       res.json({status: 1, msg: '', filename: newName})

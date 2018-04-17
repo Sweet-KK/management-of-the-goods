@@ -1,13 +1,13 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
+// var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var fs = require('fs');
 
 var index = require('./routes/index');
-var api = require('./routes/data');
+var api = require('./routes/api');
 
 var app = express();
 
@@ -29,9 +29,8 @@ app.use('/', index);
  */
 app.get('/api/assets/:imageName', function (req, res, next) {
   var imageName = req.params.imageName;
-  var suffix = imageName.split('.')[imageName.split('.').length - 1];
+  // var suffix = imageName.split('.')[imageName.split('.').length - 1];
   // console.log("文件名：", imageName);
-  // console.log("后缀名：", suffix);
   // res.writeHead(200, {'Content-Type': 'image/' + suffix});
   res.send(fs.readFileSync(path.join(__dirname, 'public', 'assets', imageName)));
 });
