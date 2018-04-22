@@ -2,7 +2,7 @@ var mysql = require("mysql");
 var pool = mysql.createPool({
     host:"localhost",
     user:"root",
-    password:"20160502",
+    password:"306484328",
     database:"shop"
 });
 /*设置一个函数用来抽取对应的增删改查
