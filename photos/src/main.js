@@ -32,7 +32,9 @@ Viewer.setDefaults({
 import App from './App'
 import router from './router'
 import axios from 'axios'
+import moment from 'moment'
 Vue.prototype.axios = axios
+Vue.prototype.moment = moment
 
 Vue.use(Button)
 Vue.use(Input)

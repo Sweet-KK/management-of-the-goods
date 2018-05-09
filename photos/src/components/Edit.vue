@@ -10,7 +10,7 @@
           :options="options.open"
           @pulling-down="onPullingDown"
           @pulling-up="onPullingUp">
-        
+
         <!--Search-->
         <div class="searchBar">
           <cube-input
@@ -21,7 +21,7 @@
           ></cube-input>
           <a href="" @click.prevent="search" class="icon iconfont icon-sousuo"></a>
         </div>
-        
+
         <div class="photos">
           <div class="photo-list" v-if="items.length>0" v-for="(item, index) in items">
             <a class="delete icon iconfont icon-close" href="" @click.prevent="toDelete(item.id,index)"></a>
@@ -35,7 +35,7 @@
                 <span class="orig">原价:<b>{{item.orig_price || 'null'}}</b></span>
                 <span class="curr">售价:<b>{{item.curr_price || 'null'}}</b></span>
               </p>
-              <p class="time">发表于 <span>{{item.creat_time | dateFormat}}</span></p>
+              <p class="time">发表于 <span>{{moment(Date(item.creat_time)).format('YYYY-MM-DD HH:mm:ss')}}</span></p>
               <router-link :to="'/edit-this/'+item.id" class="edit-this icon iconfont icon-bianji">编辑</router-link>
             </div>
           </div>
@@ -43,7 +43,7 @@
             <div class="tip">暂无数据</div>
           </div>
         </div>
-        
+
       </cube-scroll>
     </div>
   </div>
@@ -51,7 +51,7 @@
 
 <script>
   import PhotoPreview from '../components/PhotoPreview'
-  
+
   export default {
     name: 'edit',
     data() {
@@ -113,7 +113,7 @@
         setTimeout(()=>{
           this.addPageData(this.pageNum,this.pageSize)
         }, 300)
-        
+
       },
       // 搜索关键词
       search() {
@@ -138,7 +138,7 @@
           this.$refs.scroll.forceUpdate()
           console.log(err);
         })
-        
+
       },
       // 获取某页数据拼接原来数据显示
       addPageData(num,pageSz) {
@@ -164,7 +164,7 @@
           this.$refs.scroll.forceUpdate()
           console.log(err);
         })
-        
+
       },
       // 路由后退
       toBack() {

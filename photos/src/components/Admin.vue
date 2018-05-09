@@ -4,7 +4,7 @@
       <a href="" @click.prevent="toBack" class="be-back icon iconfont icon-guanbi"></a>
       <h2>后台管理</h2>
     </div>
-    
+
     <ul class="menu">
       <li><a href="#/upload">新增商品</a></li>
       <li><a href="#/edit">商品管理</a></li>
@@ -13,8 +13,8 @@
 </template>
 
 <script>
-  import cookie from 'js-cookies'
- 
+  // import cookie from 'js-cookies'
+
   export default {
     name: "admin",
     methods: {
@@ -31,7 +31,7 @@
         .catch((err)=>{
           console.log(err);
         })
-        
+
       }
     }
   }

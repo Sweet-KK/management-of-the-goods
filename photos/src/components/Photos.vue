@@ -10,7 +10,7 @@
           :options="options.open"
           @pulling-down="onPullingDown"
           @pulling-up="onPullingUp">
-        
+
         <!--banner-->
         <cube-slide ref="slide" :data="banners">
           <cube-slide-item v-for="(item, index) in banners" :key="index">
@@ -19,7 +19,7 @@
             </a>
           </cube-slide-item>
         </cube-slide>
-        
+
         <!--Search-->
         <div class="searchBar">
           <cube-input
@@ -30,7 +30,7 @@
           ></cube-input>
           <a href="" @click.prevent="search" class="icon iconfont icon-sousuo"></a>
         </div>
-        
+
         <div class="photos">
           <div class="photo-list" v-if="items.length>0" v-for="item in items">
             <div class="grid">
@@ -44,14 +44,14 @@
                 <span class="orig">原价:<b>{{item.orig_price || 'null'}}</b></span>
                 <span class="curr">售价:<b>{{item.curr_price || 'null'}}</b></span>
               </p>
-              <p class="time">发表于 <span>{{item.creat_time | dateFormat}}</span></p>
+              <p class="time">发表于 <span>{{moment(Date(item.creat_time)).format('YYYY-MM-DD HH:mm:ss')}}</span></p>
             </div>
           </div>
           <div class="photo-list" :class="[items.length==0 ? 'nodata' : '']" v-if="items.length==0">
             <div class="tip">暂无数据</div>
           </div>
         </div>
-        
+
       </cube-scroll>
     </div>
   </div>
@@ -59,8 +59,8 @@
 
 <script>
   import PhotoPreview from '../components/PhotoPreview'
-  import cookies from 'js-cookies'
-  
+  // import cookies from 'js-cookies'
+
   export default {
     name: 'photos',
     data() {
@@ -123,7 +123,7 @@
         setTimeout(()=>{
           this.addPageData(this.pageNum,this.pageSize)
         }, 200)
-        
+
       },
       // 搜索关键词
       search() {
@@ -148,7 +148,7 @@
           this.$refs.scroll.forceUpdate()
           console.log(err);
         })
-        
+
       },
       // 获取某页数据拼接原来数据显示
       addPageData(num,pageSz) {
@@ -174,7 +174,7 @@
           this.$refs.scroll.forceUpdate()
           console.log(err);
         })
-        
+
       },
       // 判断token
       checkToken(){

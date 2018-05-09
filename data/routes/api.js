@@ -114,7 +114,7 @@ router.post("/upload/img", function (req, res, next) {
       var types = files.file.name.split('.'); //将文件名以.分隔，取得数组最后一项作为文件后缀名。
       var date = new Date();
       var ms = Date.parse(date); //计算当前时间与1970年1月1日午夜相差的毫秒数 赋值给ms以确保文件名无重复。
-      var newPath = `${__dirname}\\..\\public\\assets\\`;
+      var newPath = `${__dirname}/../public/assets/`;
       var newName = `${ms}${Math.floor(Math.random() * 100)}.${String(types[types.length - 1])}`;
       console.log(newName+'图片上传成功');
   
@@ -149,7 +149,7 @@ router.post("/upload/text", function (req, res, next) {
  * 删除文件
  */
 function deleteFile(fileName, fn) {
-  fs.unlink(`${__dirname}\\..\\public\\assets\\${fileName}`, function (err) {
+  fs.unlink(`${__dirname}/../public/assets/${fileName}`, function (err) {
     if (err) {
       console.error(err);
     } else {
