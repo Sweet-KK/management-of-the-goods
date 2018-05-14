@@ -4,7 +4,7 @@
       <a href="" @click.prevent="toBack" class="be-back icon iconfont icon-guanbi"></a>
       <h2>商品上传</h2>
     </div>
-    
+
     <form method="post" enctype="multipart/form-data" action="" @submit.prevent="uploadData">
       <div class="item">
         <label for="">选择图片：</label>
@@ -13,6 +13,7 @@
           action="/api/upload/img"
           @file-success="addToArr"
           @file-removed="filesRemoved"
+          :process-file="processFile"
           :simultaneous-uploads="9"/>
         <input type="hidden" name="images" :value="images">
       </div>
@@ -38,6 +39,8 @@
 </template>
 
 <script>
+  import lrz from '../../node_modules/lrz'
+
   export default {
     name: "upload",
     data() {
@@ -63,6 +66,19 @@
         if (index > -1) {
           this.images.splice(index, 1);
         }
+      },
+      processFile(file, next) {
+        lrz(file)
+          .then(function (rst) {
+            // 处理成功会执行
+            console.log(rst);
+            console.log('压缩上传成功');
+            next(rst.file)
+          })
+          .catch(function (err) {
+            // 处理失败会执行
+            console.log('图片上传失败');
+          });
       },
       filesRemoved(file){
         console.log(file);
@@ -94,7 +110,7 @@
           toast.show()
           return;
         }
-        
+
         // 提交数据
         this.axios.post('/api/upload/text',{
           title: this.title,

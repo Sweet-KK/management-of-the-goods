@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50546
 File Encoding         : 65001
 
-Date: 2018-05-09 16:37:38
+Date: 2018-05-14 15:14:27
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -28,9 +28,4 @@ CREATE TABLE `shop_list` (
   `orig_price` float DEFAULT NULL,
   `curr_price` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of shop_list
--- ----------------------------
-INSERT INTO `shop_list` VALUES ('1', '2018-05-09 15:21:17', 'aaaaa', '777', '/api/assets/152585047100016.jpg', '888', '88');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
