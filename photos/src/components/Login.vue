@@ -77,7 +77,18 @@
         })
       },
       toBack(){
-        this.$router.back(-1)
+        // 发送校验token请求
+        this.axios.post('/api/checktoken')
+          .then((res)=>{
+            if(res.data.return==1){
+              this.$router.back(-1)
+            }else {
+              this.$router.push('/')
+            }
+          })
+          .catch((err)=>{
+            console.log(err);
+          })
       }
     }
   }

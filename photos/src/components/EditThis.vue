@@ -108,7 +108,18 @@
       }
     },
     created:function () {
-      this.getData(this.id)
+      // 发送校验token请求
+      this.axios.post('/api/checktoken')
+        .then((res) => {
+          if (res.data.return == 1) {
+            this.getData(this.id)
+          } else {
+            this.$router.push('/login')
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
     },
     filters: {
       // 图片字符串转换成数组

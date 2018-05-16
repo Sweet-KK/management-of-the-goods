@@ -37,6 +37,8 @@ const shop_list = sequelize.define('shop_list', {
     timestamps: true,
     createdAt: 'creat_time',
     updatedAt: 'update_time',
+    charset: 'utf8',
+    collate: 'utf8_general_ci',
     deletedAt: false,
     freezeTableName: true // Model 对应的表名将与model名相同
   });

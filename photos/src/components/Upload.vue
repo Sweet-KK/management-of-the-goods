@@ -141,6 +141,20 @@
       toBack(){
         this.$router.back(-1)
       }
+    },
+    created:function () {
+      // 发送校验token请求
+      this.axios.post('/api/checktoken')
+        .then((res) => {
+          if (res.data.return == 1) {
+
+          } else {
+            this.$router.push('/login')
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
     }
   }
 </script>

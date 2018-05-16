@@ -161,51 +161,75 @@
       },
       // 删除指定数据
       toDelete(id,index){
-        this.$createDialog({
-          type: 'confirm',
-          icon: '',
-          title: '',
-          content: '确认删除此条数据?',
-          confirmBtn: {
-            text: '确定',
-            active: true,
-            disabled: false,
-            href: 'javascript:;'
-          },
-          cancelBtn: {
-            text: '取消',
-            active: false,
-            disabled: false,
-            href: 'javascript:;'
-          },
-          onConfirm: () => {
-            // 确认即删除
-            this.axios.post('/api/del',{
-              id: id
-            })
-            .then((res)=>{
-              if(res.data.return==1){
-                this.items.splice(index,1)
-              }else {
-                this.$createToast({
-                  type: 'warn',
-                  time: 1000,
-                  txt: '删除失败'+res.data.msg
-                }).show()
-              }
-            })
-            .catch((err)=>{
-              console.log(err);
-            })
-          },
-          onCancel: () => {
-            // 取消不作任何处理
-          }
-        }).show()
+        // 发送校验token请求
+        this.axios.post('/api/checktoken')
+          .then((res) => {
+            if (res.data.return == 1) {
+              this.$createDialog({
+                type: 'confirm',
+                icon: '',
+                title: '',
+                content: '确认删除此条数据?',
+                confirmBtn: {
+                  text: '确定',
+                  active: true,
+                  disabled: false,
+                  href: 'javascript:;'
+                },
+                cancelBtn: {
+                  text: '取消',
+                  active: false,
+                  disabled: false,
+                  href: 'javascript:;'
+                },
+                onConfirm: () => {
+                  // 确认即删除
+                  this.axios.post('/api/del',{
+                    id: id
+                  })
+                    .then((res)=>{
+                      if(res.data.return==1){
+                        this.items.splice(index,1)
+                      }else {
+                        this.$createToast({
+                          type: 'warn',
+                          time: 1000,
+                          txt: '删除失败'+res.data.msg
+                        }).show()
+                      }
+                    })
+                    .catch((err)=>{
+                      console.log(err);
+                    })
+                },
+                onCancel: () => {
+                  // 取消不作任何处理
+                }
+              }).show()
+
+
+            } else {
+              this.$router.push('/login')
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          })
       }
     },
     created: function () {
-      this.getPageData(this.pageNum,this.pageSize)
+      // 发送校验token请求
+      this.axios.post('/api/checktoken')
+        .then((res) => {
+          if (res.data.return == 1) {
+            this.getPageData(this.pageNum,this.pageSize)
+          } else {
+            this.$router.push('/login')
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
     },
     filters: {
       // 图片字符串转换成数组

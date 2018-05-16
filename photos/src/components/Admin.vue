@@ -21,18 +21,31 @@
       toBack() {
         // 发送校验token请求
         this.axios.post('/api/checktoken')
-        .then((res)=>{
-          if(res.data.return==1){
-            this.$router.push('/')
-          }else {
-            this.$router.back(-1)
+          .then((res) => {
+            if (res.data.return == 1) {
+              this.$router.push('/')
+            } else {
+              this.$router.push('/login')
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+      }
+    },
+    created: function () {
+      // 发送校验token请求
+      this.axios.post('/api/checktoken')
+        .then((res) => {
+          if (res.data.return == 1) {
+
+          } else {
+            this.$router.push('/login')
           }
         })
-        .catch((err)=>{
+        .catch((err) => {
           console.log(err);
         })
-
-      }
     }
   }
 </script>
@@ -44,10 +57,12 @@
     top: 0;
     padding: 0 10px;
   }
-  .menu{
+
+  .menu {
     text-align: center;
   }
-  .menu li{
+
+  .menu li {
     margin-top: 15px;
   }
 </style>
