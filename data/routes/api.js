@@ -30,7 +30,6 @@ router.post('/gettoken', function (req, res, next) {
       msg: '账号密码正确',
       data: token
     })
-    // res.json({status: 1, msg: token})
   } else {
     res.send({
       return: -1,
@@ -38,7 +37,6 @@ router.post('/gettoken', function (req, res, next) {
       msg: '账号密码不正确',
       data: ''
     })
-    // res.json({status: 0, msg: '账号或密码不正确'})
   }
 })
 /**
@@ -54,7 +52,6 @@ router.post('/checktoken', function (req, res, next) {
         msg: 'token错误',
         data: err
       })
-      // res.json({status: 0, msg: err})
     } else {
       res.send({
         return: 1,
@@ -62,7 +59,6 @@ router.post('/checktoken', function (req, res, next) {
         msg: 'token验证通过',
         data: decode
       })
-      // res.json({status: 1, msg: decode})
     }
   })
 })
@@ -214,7 +210,6 @@ router.post("/upload/img", function (req, res, next) {
         msg: 'img upload error',
         data: err,
       })
-      // res.json({status: 0, msg: '图片上传失败', error: err})
     } else {
       // console.log(files);   //上传文件
       let types = files.file.name.split('.'); //将文件名以.分隔，取得数组最后一项作为文件后缀名。
@@ -232,7 +227,6 @@ router.post("/upload/img", function (req, res, next) {
         msg: 'img upload success',
         filename: newName
       })
-      // res.json({status: 1, msg: '', filename: newName})
     }
   })
 });
@@ -270,15 +264,6 @@ router.post("/upload/text", function (req, res, next) {
       })
     }
   })
-
-  // // 添加到数据库中
-  // db.query(`insert into shop_list(title,content,images,orig_price,curr_price) values('${title}','${content}','${images}','${origPrice}','${currPrice}')`, function (err, rows) {
-  //   if (err) {
-  //     res.json({status: 0, msg: '新增数据失败', error: err})
-  //   } else {
-  //     res.json({status: 1, msg: '', data: rows})
-  //   }
-  // });
 
 });
 
@@ -346,16 +331,6 @@ router.post("/update", function (req, res, next) {
       data: '',
     })
   }
-
-  //
-  // // 向数据库发起修改
-  // db.query(sql, function (err, rows) {
-  //   if (err) {
-  //     res.json({status: 0, msg: '修改失败', error: err})
-  //   } else {
-  //     res.json({status: 1, msg: '', data: rows})
-  //   }
-  // });
 });
 
 
