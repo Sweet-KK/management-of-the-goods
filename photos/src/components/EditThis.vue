@@ -4,13 +4,13 @@
       <a href="" @click.prevent="toBack" class="be-back icon iconfont icon-guanbi"></a>
       <h2>商品编辑</h2>
     </div>
-  
+
     <photo-preview
         v-if="images.length>0"
         :images = "images | imgArr"
         :showDel="true"
     ></photo-preview>
-    
+
     <form method="post" enctype="multipart/form-data" action="" @submit.prevent="updateData">
       <div class="item">
         <label for=""><i>*</i>标题：</label>
@@ -35,7 +35,7 @@
 
 <script>
   import PhotoPreview from '../components/PhotoPreview'
-  
+
   export default {
     name: "edit-this",
     data() {
@@ -68,7 +68,7 @@
           currPrice: this.currPrice
         })
         .then((res) => {
-          if(res.data.status==1){
+          if(res.data.return==1){
             this.$createToast({
               type: 'warn',
               time: 1000,
@@ -92,12 +92,12 @@
           }
         })
         .then((res) => {
-          console.log(res.data.data[0]);
-          this.images = res.data.data[0].images;
-          this.title = res.data.data[0].title;
-          this.content = res.data.data[0].content;
-          this.origPrice = res.data.data[0].orig_price;
-          this.currPrice = res.data.data[0].curr_price;
+          console.log(res.data.data);
+          this.images = res.data.data.images;
+          this.title = res.data.data.title;
+          this.content = res.data.data.content;
+          this.origPrice = res.data.data.orig_price;
+          this.currPrice = res.data.data.curr_price;
         })
         .catch((err) => {
           console.log(err);

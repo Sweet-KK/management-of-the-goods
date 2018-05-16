@@ -22,7 +22,7 @@
         // 发送校验token请求
         this.axios.post('/api/checktoken')
         .then((res)=>{
-          if(res.data.status==1){
+          if(res.data.return==1){
             this.$router.push('/')
           }else {
             this.$router.back(-1)

@@ -71,8 +71,7 @@
         lrz(file)
           .then(function (rst) {
             // 处理成功会执行
-            console.log(rst);
-            console.log('压缩上传成功');
+            // console.log(rst);
             next(rst.file)
           })
           .catch(function (err) {
@@ -81,16 +80,16 @@
           });
       },
       filesRemoved(file){
-        console.log(file);
+        // console.log(file);
         // 图片上传成功删除时才需要删除对应文件
-        if(file.response.status==1){
+        if(file.response.return==1){
           var fileName = file.response.filename;
-          console.log(fileName);
           this.axios.post('/api/delfile',{
             fileName:fileName
           })
           .then((res)=>{
-            if(res.data.status==1){
+            console.log(res);
+            if(res.data.return==1){
               this.delFromArr(fileName)
             }
           })
@@ -102,12 +101,11 @@
       uploadData(){
         // 非空验证,正则验证
         if(this.title=='' || this.content==''){
-          const toast = this.$createToast({
+          this.$createToast({
             type: 'warn',
             time: 1000,
             txt: '标题和内容不能为空!'
-          })
-          toast.show()
+          }).show()
           return;
         }
 
@@ -117,10 +115,11 @@
           content: this.content,
           origPrice: this.origPrice,
           currPrice: this.currPrice,
-          images: this.images
+          images: this.images.toString()
         })
         .then((res) => {
-          if(res.data.status==1){
+          console.log(res);
+          if(res.data.return==1){
             // 重新渲染上传组件,清空已提交信息
             this.isRender = false;
             this.$nextTick(()=>{

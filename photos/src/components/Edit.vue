@@ -35,7 +35,7 @@
                 <span class="orig">原价:<b>{{item.orig_price || 'null'}}</b></span>
                 <span class="curr">售价:<b>{{item.curr_price || 'null'}}</b></span>
               </p>
-              <p class="time">发表于 <span>{{moment(Date(item.creat_time)).format('YYYY-MM-DD HH:mm:ss')}}</span></p>
+              <p class="time">发表于 <span>{{moment(item.update_time).format('YYYY-MM-DD HH:mm:ss')}}</span></p>
               <router-link :to="'/edit-this/'+item.id" class="edit-this icon iconfont icon-bianji">编辑</router-link>
             </div>
           </div>
@@ -57,20 +57,6 @@
     data() {
       return {
         keyword: '',
-        banners: [
-          {
-            url: 'http://www.didichuxing.com/',
-            image: '//webapp.didistatic.com/static/webapp/shield/cube-ui-examples-slide01.png'
-          },
-          {
-            url: 'http://www.didichuxing.com/',
-            image: '//webapp.didistatic.com/static/webapp/shield/cube-ui-examples-slide02.png'
-          },
-          {
-            url: 'http://www.didichuxing.com/',
-            image: '//webapp.didistatic.com/static/webapp/shield/cube-ui-examples-slide03.png'
-          }
-        ],
         // images: [],
         items: [],
         pageNum: 1,
@@ -131,8 +117,10 @@
           }
         })
         .then((res) => {
+          if (res.data.return == 1) {
+            this.items = res.data.data;;
+          }
           this.$refs.scroll.forceUpdate()
-          this.items = res.data.data;
         })
         .catch((err) => {
           this.$refs.scroll.forceUpdate()
@@ -150,14 +138,15 @@
           }
         })
         .then((res) => {
-          if (res.data.data.length > 0) {
+          console.log(res);
+          if (res.data.return == 1) {
             // 如果有新数据,拼接到旧数据后面
             this.$refs.scroll.forceUpdate()
             this.items = this.items.concat(res.data.data)
           } else {
             // 如果没有新数据
             this.$refs.scroll.forceUpdate()
-            this.pageNum = res.data.totalPage;
+            this.pageNum--;
           }
         })
         .catch((err) => {
@@ -195,7 +184,7 @@
               id: id
             })
             .then((res)=>{
-              if(res.data.status==1){
+              if(res.data.return==1){
                 this.items.splice(index,1)
               }else {
                 this.$createToast({
@@ -219,11 +208,6 @@
       this.getPageData(this.pageNum,this.pageSize)
     },
     filters: {
-      // 后台日期格式化
-      dateFormat(val) {
-        var date = new Date(val);
-        return date.toLocaleString();
-      },
       // 图片字符串转换成数组
       imgArr(val) {
         return val.split(',');

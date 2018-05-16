@@ -4,7 +4,7 @@
       <a href="" @click.prevent="toBack" class="be-back icon iconfont icon-guanbi"></a>
       <h2>管理员登录</h2>
     </div>
-    
+
     <form method="post" enctype="multipart/form-data" action="" @submit.prevent="toLogin">
       <div class="item">
         <label for="">账号：</label>
@@ -22,7 +22,7 @@
 <script>
   import md5 from 'md5';
   import cookies from 'js-cookies'
-  
+
   export default {
     name: "login",
     data() {
@@ -36,12 +36,11 @@
       toLogin(){
         // 非空验证
         if(this.account=='' || this.pwd==''){
-          const toast = this.$createToast({
+          this.$createToast({
             type: 'warn',
             time: 1000,
             txt: '请输入账号密码!!!'
-          })
-          toast.show()
+          }).show()
           return;
         }
         // 获取token
@@ -51,11 +50,11 @@
           pwd: md5(this.pwd+salt)
         })
         .then((res)=>{
-          if(res.data.status==1){
+          if(res.data.return==1){
             // 把token存储到session/cookies
-            var token = res.data.msg;
+            var token = res.data.data;
             cookies.setItem('token', token);
-            
+
             // toast2秒后页面跳转
             this.$createToast({
               type: 'warn',
@@ -74,7 +73,7 @@
           }
         })
         .catch((err)=>{
-        
+          console.log(err);
         })
       },
       toBack(){

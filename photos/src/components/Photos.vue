@@ -44,7 +44,7 @@
                 <span class="orig">原价:<b>{{item.orig_price || 'null'}}</b></span>
                 <span class="curr">售价:<b>{{item.curr_price || 'null'}}</b></span>
               </p>
-              <p class="time">发表于 <span>{{moment(Date(item.creat_time)).format('YYYY-MM-DD HH:mm:ss')}}</span></p>
+              <p class="time">发表于 <span>{{moment(item.update_time).format('YYYY-MM-DD HH:mm:ss')}}</span></p>
             </div>
           </div>
           <div class="photo-list" :class="[items.length==0 ? 'nodata' : '']" v-if="items.length==0">
@@ -59,7 +59,6 @@
 
 <script>
   import PhotoPreview from '../components/PhotoPreview'
-  // import cookies from 'js-cookies'
 
   export default {
     name: 'photos',
@@ -68,16 +67,16 @@
         keyword: '',
         banners: [
           {
-            url: 'http://www.didichuxing.com/',
-            image: '//webapp.didistatic.com/static/webapp/shield/cube-ui-examples-slide01.png'
+            url: 'http://www.szwego.com/static/index.html#/shop_detail/A2018030821185676270',
+            image: 'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=979372710,1813498372&fm=58'
           },
           {
-            url: 'http://www.didichuxing.com/',
-            image: '//webapp.didistatic.com/static/webapp/shield/cube-ui-examples-slide02.png'
+            url: 'http://www.szwego.com/static/index.html#/shop_detail/A2018030821185676270',
+            image: 'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=107759299,109922674&fm=58'
           },
           {
-            url: 'http://www.didichuxing.com/',
-            image: '//webapp.didistatic.com/static/webapp/shield/cube-ui-examples-slide03.png'
+            url: 'http://www.szwego.com/static/index.html#/shop_detail/A2018030821185676270',
+            image: 'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3596500674,1367887467&fm=58'
           }
         ],
         // images: [],
@@ -141,8 +140,10 @@
           }
         })
         .then((res) => {
+          if (res.data.return == 1) {
+            this.items = res.data.data;
+          }
           this.$refs.scroll.forceUpdate()
-          this.items = res.data.data;
         })
         .catch((err) => {
           this.$refs.scroll.forceUpdate()
@@ -160,14 +161,15 @@
           }
         })
         .then((res) => {
-          if (res.data.data.length > 0) {
+          console.log(res);
+          if (res.data.return == 1) {
             // 如果有新数据,拼接到旧数据后面
             this.$refs.scroll.forceUpdate()
             this.items = this.items.concat(res.data.data)
           } else {
             // 如果没有新数据
             this.$refs.scroll.forceUpdate()
-            this.pageNum = res.data.totalPage;
+            this.pageNum--;
           }
         })
         .catch((err) => {
@@ -181,7 +183,7 @@
         // 发送校验token请求
         this.axios.post('/api/checktoken')
         .then((res)=>{
-          if(res.data.status==1){
+          if(res.data.return==1){
             this.$router.push('/admin')
           }else {
             this.$router.push('/login')
@@ -196,11 +198,6 @@
       this.getPageData(this.pageNum,this.pageSize)
     },
     filters: {
-      // 后台日期格式化
-      dateFormat(val) {
-        var date = new Date(val);
-        return date.toLocaleString();
-      },
       // 图片字符串转换成数组
       imgArr(val) {
         return val.split(',');
