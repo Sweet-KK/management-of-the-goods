@@ -117,7 +117,7 @@
           }
         })
         .then((res) => {
-          if (res.data.return == 1) {
+          if (res.data.return != -1) {
             this.items = res.data.data;;
           }
           this.$refs.scroll.forceUpdate()
@@ -139,7 +139,7 @@
         })
         .then((res) => {
           console.log(res);
-          if (res.data.return == 1) {
+          if (res.data.return != -1) {
             // 如果有新数据,拼接到旧数据后面
             this.$refs.scroll.forceUpdate()
             this.items = this.items.concat(res.data.data)
