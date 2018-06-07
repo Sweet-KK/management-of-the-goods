@@ -40,6 +40,12 @@ module.exports = {
       '@': resolve('src'),
     }
   },
+  externals: {
+    'vue':'Vue',
+    'vue-router':'VueRouter',
+    'moment':'moment',
+    'axios':'axios',
+  },
   module: {
     rules: [
       {

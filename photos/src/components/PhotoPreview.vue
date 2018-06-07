@@ -25,7 +25,7 @@
     },
     data() {
       return {
-        // images: ['src/assets/logo.png', 'https://www.baidu.com/img/baidu_jgylogo3.gif', 'src/assets/logo.png'],
+
       }
     }
   }
